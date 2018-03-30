@@ -6,7 +6,7 @@ import logging.handlers
 #AdafruitIO
 # Import library and create instance of REST client.
 from Adafruit_IO import Client
-aio = Client('')
+aio = Client('48eb52be9fed48d4b1fd94cd4a1e8e00')
 
 
 # Import SPI library (for hardware SPI) and MCP3008 library.
@@ -18,32 +18,21 @@ from Adafruit_BME280 import *
 log_file_name = 'LogRaw.log'
 logging_level = logging.INFO
 
-#logger = logging.getLogger("Sensors")
-#logger.setLevel(logging.INFO)
-
-
-# set TimedRotatingFileHandler for root
+# set Timed Rotating File Handler
 formatter = logging.Formatter('%(asctime)s,%(name)s, %(levelname)s, %(message)s',"%Y-%m-%d %H:%M:%S")
-# use very short interval for this example, typical 'when' would be 'midnight' and no explicit interval
+
+#Rotate Every night at midnight and keep 180 logs
 handler = logging.handlers.TimedRotatingFileHandler(log_file_name, when="midnight", interval=1, backupCount=180)
 handler.setFormatter(formatter)
-logger = logging.getLogger("Sensors") # or pass string to give it a name
+
+logger = logging.getLogger("Sensors")
 logger.addHandler(handler)
 logger.setLevel(logging_level)
-# generate lots of example messages
 
-
-
-## create the logging file handler
-#fh = logging.FileHandler("log_file_name")
-##formatter = logging.Formatter('%(asctime)s,%(name)s, %(levelname)s, %(message)s')
-#formatter = logging.Formatter('%(asctime)s,%(name)s, %(levelname)s, %(message)s',"%Y-%m-%d %H:%M:%S")
-#fh.setFormatter(formatter)
-#logger.addHandler(fh)
 
 #Logging Header
 logger.info("Start Logging")
-logger.info("ASCTime,Miliseconds,Name,Level,1,2,3,4,5,6,7,degrees,pressure,humidity")
+logger.info("ASCTime,Name,Level,1,2,3,4,5,6,7,degrees,pressure,humidity")
 
 
 # Hardware SPI configuration:
@@ -104,12 +93,11 @@ while True:
     except Exception:
         pass
 
-
+    #Sleep till the minute mark
     t = datetime.now()
     sleeptime = 60 - (t.second + t.microsecond/1000000.0)
     time.sleep(sleeptime)
-    # Pause for half a second.
-    #time.sleep(60)
+
    except Exception as e:
     logging.exception("message")
     pass  # or you could use 'continue'
